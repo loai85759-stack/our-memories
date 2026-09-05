@@ -351,6 +351,29 @@
       border-radius: 14px;
     }
 
+    .memory audio {
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .attachment-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 15px;
+      padding: 10px 13px;
+      color: #fff8f0;
+      background: #ffffff12;
+      border: 1px solid #ffffff22;
+      border-radius: 10px;
+      text-decoration: none;
+    }
+
+    .attachment-link:hover {
+      color: var(--gold);
+      border-color: #e8b86d88;
+    }
+
     .meta {
       margin-top: 12px;
       color: #d8cbd1;
@@ -367,6 +390,429 @@
       padding: 25px;
       color: #bcaeb7;
       text-align: center;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      color: #ead9df;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .form-label i,
+    .memory-icon {
+      color: var(--gold);
+    }
+
+    .memory-topline,
+    .memory-details,
+    .memory-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .memory-topline {
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .memory-topline h3 {
+      flex: 1;
+    }
+
+    .seen-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border: 1px solid #77d6ca66;
+      border-radius: 999px;
+      color: #a8f3ea;
+      background: #55c7bd1c;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .memory-details {
+      flex-wrap: wrap;
+      margin-top: 13px;
+      color: #d8cbd1;
+      font-size: 14px;
+    }
+
+    .memory-details span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .memory-actions {
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .memory-actions button {
+      width: auto;
+      margin-top: 0;
+    }
+
+    .seen-button {
+      padding: 11px 17px;
+      color: #d6fffa;
+      background: #55c7bd25;
+      border: 1px solid #77d6ca66;
+    }
+
+    .chat-toggle {
+      display: none;
+      position: fixed;
+      left: 24px;
+      bottom: 24px;
+      z-index: 25;
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      margin: 0;
+      padding: 0;
+      border-radius: 50%;
+      color: #241914;
+      font-size: 21px;
+      box-shadow: 0 12px 30px #00000055;
+    }
+
+    .chat-toggle.chat-visible {
+      display: grid;
+    }
+
+    .chat-panel {
+      position: fixed;
+      left: 24px;
+      bottom: 94px;
+      z-index: 24;
+      width: min(380px, calc(100vw - 32px));
+      overflow: hidden;
+      background: #211720ee;
+      border: 1px solid #e8b86d66;
+      border-radius: 20px;
+      box-shadow: 0 18px 50px #00000066;
+      backdrop-filter: blur(16px);
+    }
+
+    .chat-panel[hidden] {
+      display: none;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      color: var(--gold);
+      border-bottom: 1px solid #ffffff18;
+    }
+
+    .chat-close {
+      width: 34px;
+      height: 34px;
+      margin: 0;
+      padding: 0;
+      color: #fff8f0;
+      background: transparent;
+      border: 1px solid #ffffff22;
+    }
+
+    .chat-messages {
+      height: 280px;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-message {
+      align-self: flex-start;
+      width: fit-content;
+      max-width: 85%;
+      margin: 8px 0;
+      padding: 9px 12px;
+      color: #fff8f0;
+      background: #ffffff12;
+      border-radius: 14px 14px 14px 4px;
+    }
+
+    .chat-message.mine {
+      align-self: flex-end;
+      background: #e8b86d2b;
+      border-radius: 14px 14px 4px 14px;
+    }
+
+    .chat-message strong,
+    .chat-message small {
+      display: block;
+    }
+
+    .chat-message strong {
+      color: var(--gold);
+      font-size: 12px;
+    }
+
+    .chat-message small {
+      margin-top: 3px;
+      color: #cbbbc3;
+      font-size: 10px;
+    }
+
+    .chat-message .chat-edited,
+    .chat-message .chat-seen {
+      display: inline;
+      margin-left: 5px;
+      color: #a8f3ea;
+      font-size: 10px;
+    }
+
+    .activity-toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 26;
+      max-width: min(340px, calc(100vw - 32px));
+      padding: 12px 15px;
+      color: #fff8f0;
+      background: #211720f2;
+      border: 1px solid #e8b86d88;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px #00000055;
+      animation: modal-pop 220ms ease-out;
+    }
+
+    .activity-toast[hidden] {
+      display: none;
+    }
+
+    .notification-button {
+      position: fixed;
+      top: 20px;
+      right: 80px;
+      z-index: 25;
+      display: none;
+      width: 48px;
+      height: 48px;
+      margin: 0;
+      padding: 0;
+      border-radius: 50%;
+      color: var(--gold);
+      background: #100c14cc;
+      border: 1px solid #e8b86d88;
+    }
+
+    .notification-button.notification-visible {
+      display: grid;
+      place-items: center;
+    }
+
+    .notification-count {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 19px;
+      padding: 2px 5px;
+      color: #241914;
+      background: var(--pink);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .notifications-panel {
+      position: fixed;
+      top: 78px;
+      right: 20px;
+      z-index: 24;
+      width: min(360px, calc(100vw - 32px));
+      overflow: hidden;
+      background: #211720f5;
+      border: 1px solid #e8b86d66;
+      border-radius: 16px;
+      box-shadow: 0 18px 50px #00000066;
+      backdrop-filter: blur(16px);
+    }
+
+    .notifications-panel[hidden] {
+      display: none;
+    }
+
+    .notifications-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      color: var(--gold);
+      border-bottom: 1px solid #ffffff18;
+    }
+
+    .notification-list {
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+
+    .notification-item {
+      padding: 10px;
+      border-bottom: 1px solid #ffffff12;
+    }
+
+    .notification-item.unread {
+      background: #e8b86d14;
+    }
+
+    .notification-item strong,
+    .notification-item small {
+      display: block;
+    }
+
+    .notification-item strong {
+      color: var(--gold);
+    }
+
+    .notification-item small {
+      margin-top: 3px;
+      color: #cbbbc3;
+      font-size: 11px;
+    }
+
+    .chat-message span,
+    .emoji-text {
+      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    }
+
+    .chat-message-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 7px;
+    }
+
+    .chat-message-actions button,
+    .emoji-button {
+      width: auto;
+      min-width: 30px;
+      margin: 0;
+      padding: 5px 8px;
+      color: #ead9df;
+      background: #ffffff12;
+      border: 1px solid #ffffff22;
+      font-size: 12px;
+    }
+
+    .chat-message-actions button:hover,
+    .emoji-button:hover {
+      color: var(--gold);
+      background: #ffffff20;
+    }
+
+    .chat-form {
+      position: relative;
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid #ffffff18;
+    }
+
+    .chat-form input {
+      min-width: 0;
+      margin: 0;
+    }
+
+    .chat-form button {
+      width: 48px;
+      margin: 0;
+      padding: 10px;
+    }
+
+    .chat-form .emoji-button {
+      width: 42px;
+      padding: 8px;
+      font-size: 19px;
+    }
+
+    .chat-edit-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: absolute;
+      right: 12px;
+      bottom: 58px;
+      left: 12px;
+      padding: 7px 10px;
+      color: #f3dca7;
+      background: #33271eee;
+      border: 1px solid #e8b86d55;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .chat-edit-status button {
+      width: auto;
+      padding: 2px 7px;
+      color: #f3dca7;
+      background: transparent;
+      border: 1px solid #e8b86d55;
+      font-size: 12px;
+    }
+
+    .chat-edit-status[hidden],
+    .emoji-picker[hidden] {
+      display: none;
+    }
+
+    .emoji-picker {
+      position: absolute;
+      right: 12px;
+      bottom: 62px;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      width: 246px;
+      padding: 8px;
+      background: #211720f5;
+      border: 1px solid #e8b86d66;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px #00000055;
+    }
+
+    .emoji-picker button {
+      width: 30px;
+      height: 30px;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      background: transparent;
+      border: 0;
+      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+      font-size: 20px;
+    }
+
+    .emoji-picker button:hover {
+      transform: scale(1.15);
+      background: #ffffff18;
+      box-shadow: none;
+    }
+
+    @media (max-width: 480px) {
+      .chat-toggle {
+        left: 16px;
+        bottom: 16px;
+      }
+
+      .chat-panel {
+        left: 16px;
+        bottom: 86px;
+      }
     }
   </style>
 </head>
@@ -424,6 +870,21 @@
   </section>
 
   <main class="site" id="site">
+    <button class="notification-button" id="notificationButton" type="button" aria-label="Notifications" hidden>
+      <i class="fa-solid fa-bell"></i>
+      <span class="notification-count" id="notificationCount" hidden>0</span>
+    </button>
+
+    <aside class="notifications-panel" id="notificationsPanel" hidden>
+      <div class="notifications-header">
+        <strong><i class="fa-solid fa-bell"></i> <span data-i18n="notificationTitle">Notifications</span></strong>
+        <button id="closeNotifications" class="chat-close" type="button" aria-label="Close notifications">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="notification-list" id="notificationList"></div>
+    </aside>
+
     <header>
       <div>
         <h2 data-i18n="title">Our Memories</h2>
@@ -448,13 +909,18 @@
 
         <input id="date" type="date">
 
+        <label class="form-label" for="attachment">
+          <i class="fa-solid fa-paperclip"></i>
+          <span data-i18n="addFile">Add any file, song, or photo</span>
+        </label>
+
         <textarea
           id="contentText"
           data-placeholder="memoryText"
           placeholder="Write your memory"
         ></textarea>
 
-        <input id="image" type="file" accept="image/*">
+        <input id="attachment" type="file" accept="*/*">
 
         <button id="saveButton" data-i18n="save">
           Save memory
@@ -476,6 +942,54 @@
     </div>
 
     <footer data-i18n="footer">Made with love</footer>
+
+    <div class="activity-toast" id="activityToast" hidden></div>
+
+    <button class="chat-toggle" id="chatToggle" type="button" aria-label="Open chat" hidden>
+      <i class="fa-solid fa-comments"></i>
+    </button>
+
+    <aside class="chat-panel" id="chatPanel" hidden>
+      <div class="chat-header">
+        <strong><i class="fa-solid fa-message"></i> <span data-i18n="chatTitle">Our chat</span></strong>
+        <button class="chat-close" id="chatClose" type="button" aria-label="Close chat">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <form class="chat-form" id="chatForm">
+        <div class="chat-edit-status" id="chatEditStatus" hidden>
+          <span id="chatEditText"></span>
+          <button id="cancelChatEdit" type="button" data-i18n="chatCancel">Cancel edit</button>
+        </div>
+        <div class="emoji-picker" id="emojiPicker" hidden>
+          <button type="button" class="emoji-text">😀</button>
+          <button type="button" class="emoji-text">😍</button>
+          <button type="button" class="emoji-text">🥰</button>
+          <button type="button" class="emoji-text">😘</button>
+          <button type="button" class="emoji-text">😂</button>
+          <button type="button" class="emoji-text">🤣</button>
+          <button type="button" class="emoji-text">😊</button>
+          <button type="button" class="emoji-text">😢</button>
+          <button type="button" class="emoji-text">😅</button>
+          <button type="button" class="emoji-text">😉</button>
+          <button type="button" class="emoji-text">😎</button>
+          <button type="button" class="emoji-text">🤍</button>
+          <button type="button" class="emoji-text">❤️</button>
+          <button type="button" class="emoji-text">💕</button>
+          <button type="button" class="emoji-text">💔</button>
+          <button type="button" class="emoji-text">✨</button>
+          <button type="button" class="emoji-text">🔥</button>
+          <button type="button" class="emoji-text">🎉</button>
+          <button type="button" class="emoji-text">👍</button>
+          <button type="button" class="emoji-text">🙏</button>
+          <button type="button" class="emoji-text">🥹</button>
+        </div>
+        <button class="emoji-button" id="emojiButton" type="button" aria-label="Choose emoji">😀</button>
+        <input id="chatInput" type="text" data-placeholder="chatPlaceholder" placeholder="Write a message..." maxlength="500">
+        <button type="submit" aria-label="Send message"><i class="fa-solid fa-paper-plane"></i></button>
+      </form>
+    </aside>
   </main>
 
   <div class="modal-backdrop" id="deleteModal" hidden>
@@ -524,6 +1038,7 @@
         memoryTitle: "Memory title",
         memoryText: "Write your memory",
         save: "Save memory",
+        addFile: "Add any file, song, or photo",
         ourStory: "Our story",
         specialMessage: "Special message",
         letter: "To the special person, every new memory makes our story more beautiful.",
@@ -544,6 +1059,28 @@
         confirmDelete: "Are you sure you want to delete this memory?",
         deleteError: "There was an error deleting the memory.",
         cancel: "Cancel"
+        ,seen: "Seen"
+        ,markSeen: "Mark as seen"
+        ,chatTitle: "Our chat"
+        ,chatPlaceholder: "Write a message..."
+        ,chatEmpty: "No messages yet. Start the conversation."
+        ,chatError: "The shared chat is not ready yet. Create the chat_messages table in Supabase."
+        ,chatEdit: "Editing message"
+        ,chatSave: "Save edit"
+        ,chatCancel: "Cancel edit"
+        ,chatEditButton: "Edit message"
+        ,chatDeleteButton: "Delete message"
+        ,chatDeleteConfirm: "Delete this message?"
+        ,chatDeleteExpired: "Messages can only be deleted within 24 hours."
+        ,attachmentError: "There was an error uploading the file."
+        ,downloadFile: "Download attachment"
+        ,edited: "edited"
+        ,newMessage: "New message"
+        ,newMemory: "New memory added"
+        ,notificationTitle: "Notifications"
+        ,noNotifications: "No notifications yet."
+        ,notificationMessage: "sent you a message"
+        ,notificationMemory: "added a new memory or file"
       },
 
       ar: {
@@ -557,6 +1094,7 @@
         memoryTitle: "عنوان الذكرى",
         memoryText: "اكتب تفاصيل الذكرى",
         save: "حفظ الذكرى",
+        addFile: "إضافة أي ملف أو أغنية أو صورة",
         ourStory: "حكايتنا",
         specialMessage: "رسالة خاصة",
         letter: "إلى الشخص الغالي، كل ذكرى جديدة بنضيفها بتخلي حكايتنا أجمل.",
@@ -577,6 +1115,28 @@
         confirmDelete: "هل أنت متأكد أنك تريد حذف هذه الذكرى؟",
         deleteError: "حدث خطأ أثناء حذف الذكرى",
         cancel: "إلغاء"
+        ,seen: "تمت المشاهدة"
+        ,markSeen: "تحديد كمقروءة"
+        ,chatTitle: "شاتنا"
+        ,chatPlaceholder: "اكتب رسالة..."
+        ,chatEmpty: "لا توجد رسائل بعد. ابدأ الكلام."
+        ,chatError: "الشات المشترك غير جاهز. أنشئ جدول chat_messages في Supabase أولاً."
+        ,chatEdit: "تعديل الرسالة"
+        ,chatSave: "حفظ التعديل"
+        ,chatCancel: "إلغاء التعديل"
+        ,chatEditButton: "تعديل الرسالة"
+        ,chatDeleteButton: "حذف الرسالة"
+        ,chatDeleteConfirm: "هل تريد حذف الرسالة؟"
+        ,chatDeleteExpired: "يمكن حذف الرسالة خلال أول 24 ساعة فقط."
+        ,attachmentError: "حدث خطأ أثناء رفع الملف."
+        ,downloadFile: "تحميل الملف المرفق"
+        ,edited: "تم التعديل"
+        ,newMessage: "رسالة جديدة"
+        ,newMemory: "تمت إضافة ذكرى جديدة"
+        ,notificationTitle: "الإشعارات"
+        ,noNotifications: "لا توجد إشعارات بعد."
+        ,notificationMessage: "بعت لك رسالة"
+        ,notificationMemory: "أضافت ذكرى أو ملفاً جديداً"
       }
     };
 
@@ -591,8 +1151,12 @@
     const saveError = document.getElementById("saveError");
 
     let currentUserName = "";
+    let currentUserId = "";
+    let currentUserEmail = "";
     let currentLanguage = "en";
     let memoryToDelete = null;
+    let chatChannel = null;
+    let editingMessageId = null;
     const deleteModal = document.getElementById("deleteModal");
 
     function t(key) {
@@ -636,6 +1200,15 @@
       );
 
       document.title = t("title");
+      document.getElementById("chatInput").placeholder = t("chatPlaceholder");
+      document.getElementById("chatToggle").setAttribute(
+        "aria-label",
+        t("chatTitle")
+      );
+      document.getElementById("chatClose").setAttribute(
+        "aria-label",
+        currentLanguage === "ar" ? "إغلاق الشات" : "Close chat"
+      );
     }
 
     document
@@ -670,7 +1243,13 @@
       .addEventListener("click", login);
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") login();
+      if (
+        event.key === "Enter" &&
+        loginSection.style.display !== "none" &&
+        ["email", "password"].includes(event.target.id)
+      ) {
+        login();
+      }
     });
 
     async function login() {
@@ -684,7 +1263,7 @@
 
       const password = document.getElementById("password").value;
 
-      const { error } = await supabaseClient.auth.signInWithPassword({
+      const { data: loginData, error } = await supabaseClient.auth.signInWithPassword({
         email,
         password
       });
@@ -695,8 +1274,17 @@
       }
 
       currentUserName = USER_NAMES[email] || email;
+      currentUserEmail = email;
+        currentUserId = loginData.user.id;
       loginSection.style.display = "none";
       site.style.display = "block";
+      document.getElementById("chatToggle").hidden = false;
+      document.getElementById("chatToggle").classList.add("chat-visible");
+      document.getElementById("notificationButton").hidden = false;
+      document.getElementById("notificationButton").classList.add("notification-visible");
+      startChatRealtime();
+      startNotificationsRealtime();
+      loadNotifications();
 
       await loadMemories();
     }
@@ -720,6 +1308,111 @@
         }
       });
 
+    document.getElementById("chatToggle").addEventListener("click", () => {
+      const panel = document.getElementById("chatPanel");
+      panel.hidden = !panel.hidden;
+
+      if (!panel.hidden) {
+        loadChatMessages();
+        document.getElementById("chatInput").focus();
+      }
+    });
+
+    document.getElementById("chatClose").addEventListener("click", () => {
+      document.getElementById("chatPanel").hidden = true;
+    });
+
+    document.getElementById("notificationButton").addEventListener("click", () => {
+      const panel = document.getElementById("notificationsPanel");
+      panel.hidden = !panel.hidden;
+
+      if (!panel.hidden) loadNotifications(true);
+    });
+
+    document.getElementById("closeNotifications").addEventListener("click", () => {
+      document.getElementById("notificationsPanel").hidden = true;
+    });
+
+    document.getElementById("emojiButton").addEventListener("click", () => {
+      const picker = document.getElementById("emojiPicker");
+      picker.hidden = !picker.hidden;
+    });
+
+    document.querySelectorAll("#emojiPicker button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const input = document.getElementById("chatInput");
+        input.value += button.textContent;
+        input.focus();
+      });
+    });
+
+    document.getElementById("cancelChatEdit").addEventListener("click", () => {
+      document.getElementById("chatInput").value = "";
+      resetChatComposer();
+    });
+
+    document.getElementById("chatMessages").addEventListener("click", (event) => {
+      const actionButton = event.target.closest("button[data-message-action]");
+
+      if (!actionButton) return;
+
+      const messageId = actionButton.dataset.messageId;
+      const messageText = actionButton.dataset.messageText;
+
+      if (actionButton.dataset.messageAction === "edit") {
+        editingMessageId = messageId;
+        document.getElementById("chatInput").value = messageText;
+        document.getElementById("chatEditText").textContent = t("chatEdit");
+        document.getElementById("chatEditStatus").hidden = false;
+        document.getElementById("chatInput").focus();
+        return;
+      }
+
+      if (actionButton.dataset.messageAction === "delete") {
+        deleteChatMessage(messageId);
+      }
+    });
+
+    document.getElementById("chatForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const input = document.getElementById("chatInput");
+      const message = input.value.trim();
+
+      if (!message) return;
+
+      const query = editingMessageId
+        ? supabaseClient
+          .from("chat_messages")
+          .update({ message, updated_at: new Date().toISOString() })
+          .eq("id", editingMessageId)
+          .eq("author_id", currentUserId)
+        : supabaseClient
+          .from("chat_messages")
+          .insert({
+            message,
+            author_name: currentUserName,
+            author_id: currentUserId
+          });
+
+      const { error } = await query;
+
+      if (error) {
+        document.getElementById("chatMessages").innerHTML = `<p class="meta">${t("chatError")}</p>`;
+        return;
+      }
+
+      input.value = "";
+      resetChatComposer();
+      await createNotification(
+        "message",
+        currentUserName,
+        message,
+        getOtherUserEmail()
+      );
+      await loadChatMessages();
+    });
+
     deleteModal.addEventListener("click", (event) => {
       if (event.target === deleteModal) {
         closeDeleteModal();
@@ -740,31 +1433,38 @@
         .trim();
 
       const date = document.getElementById("date").value;
-      const imageFile = document.getElementById("image").files[0];
+      const attachmentFile = document.getElementById("attachment").files[0];
 
       if (!title || !content) {
         saveError.textContent = t("required");
         return;
       }
 
-      let imagePath = null;
+      let attachmentPath = null;
+      let attachmentName = null;
+      let attachmentType = null;
 
-      if (imageFile) {
+      if (attachmentFile) {
         const fileName =
-          `${Date.now()}-${crypto.randomUUID()}-${imageFile.name}`
+          `${Date.now()}-${crypto.randomUUID()}-${attachmentFile.name}`
             .replace(/\s+/g, "-");
 
         const { error: uploadError } =
           await supabaseClient.storage
             .from(BUCKET)
-            .upload(fileName, imageFile);
+            .upload(fileName, attachmentFile, {
+              contentType: attachmentFile.type || "application/octet-stream",
+              upsert: false
+            });
 
         if (uploadError) {
-          saveError.textContent = t("uploadError");
+          saveError.textContent = t("attachmentError");
           return;
         }
 
-        imagePath = fileName;
+        attachmentPath = fileName;
+        attachmentName = attachmentFile.name;
+        attachmentType = attachmentFile.type || "application/octet-stream";
       }
 
       const { error } = await supabaseClient
@@ -773,7 +1473,10 @@
           title,
           content,
           memory_date: date || null,
-          image_url: imagePath,
+          image_url: attachmentType?.startsWith("image/") ? attachmentPath : null,
+          file_url: attachmentPath,
+          file_name: attachmentName,
+          file_type: attachmentType,
           author_name: currentUserName
         });
 
@@ -785,8 +1488,14 @@
       document.getElementById("memoryTitle").value = "";
       document.getElementById("contentText").value = "";
       document.getElementById("date").value = "";
-      document.getElementById("image").value = "";
+      document.getElementById("attachment").value = "";
 
+      await createNotification(
+        "memory",
+        currentUserName,
+        title,
+        getOtherUserEmail()
+      );
       await loadMemories();
     }
 
@@ -808,18 +1517,35 @@
       container.innerHTML = "";
 
       for (const memory of data) {
-        let imageHtml = "";
+        let attachmentHtml = "";
+        const storedFilePath = memory.file_url || memory.image_url;
 
-        if (memory.image_url) {
+        if (storedFilePath) {
           const { data: signedImage } =
             await supabaseClient.storage
               .from(BUCKET)
-              .createSignedUrl(memory.image_url, 3600);
+              .createSignedUrl(storedFilePath, 3600);
 
           if (signedImage?.signedUrl) {
-            imageHtml = `
-              <img src="${signedImage.signedUrl}" alt="${t("title")}">
-            `;
+            const fileType = memory.file_type || "image/*";
+            const fileName = memory.file_name || storedFilePath.split("/").pop();
+
+            if (fileType.startsWith("audio/")) {
+              attachmentHtml = `
+                <audio controls preload="metadata" src="${signedImage.signedUrl}"></audio>
+              `;
+            } else if (fileType.startsWith("image/")) {
+              attachmentHtml = `
+                <img src="${signedImage.signedUrl}" alt="${escapeHtml(fileName)}">
+              `;
+            } else {
+              attachmentHtml = `
+                <a class="attachment-link" href="${signedImage.signedUrl}" target="_blank" rel="noopener" download>
+                  <i class="fa-solid fa-file-arrow-down"></i>
+                  ${escapeHtml(fileName || t("downloadFile"))}
+                </a>
+              `;
+            }
           }
         }
 
@@ -827,24 +1553,34 @@
         article.className = "memory";
 
         article.innerHTML = `
-          <h3>${escapeHtml(memory.title)}</h3>
+          <div class="memory-topline">
+            <h3><i class="fa-solid fa-heart memory-icon"></i> ${escapeHtml(memory.title)}</h3>
+            <span class="seen-badge">
+              <i class="fa-solid fa-check-double"></i> ${t("seen")}
+            </span>
+          </div>
           <p>${escapeHtml(memory.content)}</p>
-          ${imageHtml}
-          <div class="meta">
-            ${t("addedBy")}: ${escapeHtml(memory.author_name)}
+          ${attachmentHtml}
+          <div class="memory-details">
+            <span><i class="fa-solid fa-user"></i> ${escapeHtml(memory.author_name)}</span>
             ${memory.memory_date
-              ? ` | ${t("date")}: ${memory.memory_date}`
+              ? `<span><i class="fa-solid fa-calendar-days"></i> ${memory.memory_date}</span>`
               : ""}
           </div>
-          <button
-            class="delete-button"
-            type="button"
-            data-memory-id="${escapeHtml(memory.id)}"
-            data-image-path="${escapeHtml(memory.image_url || "")}"
-          >
-            <i class="fa-solid fa-trash"></i>
-            ${t("delete")}
-          </button>
+          <div class="memory-actions">
+            <button class="seen-button" type="button">
+              <i class="fa-solid fa-eye"></i> ${t("markSeen")}
+            </button>
+            <button
+              class="delete-button"
+              type="button"
+              data-memory-id="${escapeHtml(memory.id)}"
+              data-image-path="${escapeHtml(memory.image_url || "")}" 
+            >
+              <i class="fa-solid fa-trash"></i>
+              ${t("delete")}
+            </button>
+          </div>
         `;
 
         container.appendChild(article);
@@ -852,6 +1588,11 @@
         article
           .querySelector(".delete-button")
           .addEventListener("click", () => deleteMemory(memory));
+
+        article.querySelector(".seen-button").addEventListener("click", (event) => {
+          event.currentTarget.innerHTML = `<i class="fa-solid fa-check-double"></i> ${t("seen")}`;
+          event.currentTarget.classList.add("seen-active");
+        });
       }
 
       if (data.length === 0) {
@@ -874,10 +1615,12 @@
 
       saveError.textContent = "";
 
-      if (memory.image_url) {
+      const storedFilePath = memory.file_url || memory.image_url;
+
+      if (storedFilePath) {
         const { error: imageError } = await supabaseClient.storage
           .from(BUCKET)
-          .remove([memory.image_url]);
+          .remove([storedFilePath]);
 
         if (imageError) {
           saveError.textContent = t("deleteError");
@@ -905,6 +1648,239 @@
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+    }
+
+    async function loadChatMessages() {
+      const container = document.getElementById("chatMessages");
+      const { data: messages, error } = await supabaseClient
+        .from("chat_messages")
+        .select("id, message, author_name, author_id, created_at, updated_at, seen_at")
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        container.innerHTML = `<p class="meta">${t("chatError")}</p>`;
+        return;
+      }
+
+      const unseenMessageIds = messages
+        .filter((item) => item.author_id !== currentUserId && !item.seen_at)
+        .map((item) => item.id);
+
+      if (unseenMessageIds.length) {
+        await supabaseClient.rpc("mark_chat_messages_seen", {
+          message_ids: unseenMessageIds
+        });
+      }
+
+      if (!messages.length) {
+        container.innerHTML = `<p class="meta">${t("chatEmpty")}</p>`;
+        return;
+      }
+
+      container.innerHTML = messages.map((item) => {
+        const isMine = item.author_id === currentUserId ||
+          (!item.author_id && item.author_name === currentUserName);
+
+        return `
+        <div class="chat-message ${isMine ? "mine" : ""}">
+          <strong>${escapeHtml(item.author_name || "")}</strong>
+          <span>${escapeHtml(item.message || "")}</span>
+          <small>
+            ${new Date(item.created_at).toLocaleString(currentLanguage === "ar" ? "ar-EG" : "en-US")}
+            ${item.updated_at && new Date(item.updated_at).getTime() > new Date(item.created_at).getTime() + 1000
+              ? `<span class="chat-edited">(${t("edited")})</span>`
+              : ""}
+            ${isMine && item.seen_at
+              ? `<span class="chat-seen"><i class="fa-solid fa-check-double"></i> ${t("seen")}</span>`
+              : ""}
+          </small>
+          ${isMine
+            ? `<div class="chat-message-actions">
+                <button type="button" data-message-action="edit" data-message-id="${escapeHtml(item.id)}" data-message-text="${escapeHtml(item.message || "")}" aria-label="${t("chatEditButton")}">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                ${canDeleteChatMessage(item)
+                  ? `<button type="button" data-message-action="delete" data-message-id="${escapeHtml(item.id)}" aria-label="${t("chatDeleteButton")}">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>`
+                  : ""}
+              </div>`
+            : ""}
+        </div>
+          `;
+          }).join("");
+      container.scrollTop = container.scrollHeight;
+    }
+
+    async function deleteChatMessage(messageId) {
+      if (!window.confirm(t("chatDeleteConfirm"))) return;
+
+      const { data: message } = await supabaseClient
+        .from("chat_messages")
+        .select("created_at")
+        .eq("id", messageId)
+        .eq("author_id", currentUserId)
+        .maybeSingle();
+
+      if (!message || !canDeleteChatMessage(message)) {
+        document.getElementById("chatMessages").innerHTML = `<p class="meta">${t("chatDeleteExpired")}</p>`;
+        await loadChatMessages();
+        return;
+      }
+
+      const { error } = await supabaseClient
+        .from("chat_messages")
+        .delete()
+        .eq("id", messageId)
+        .eq("author_id", currentUserId);
+
+      if (error) {
+        document.getElementById("chatMessages").innerHTML = `<p class="meta">${t("chatError")}</p>`;
+        return;
+      }
+
+      if (editingMessageId === messageId) resetChatComposer();
+      await loadChatMessages();
+    }
+
+    function canDeleteChatMessage(message) {
+      const messageAge = Date.now() - new Date(message.created_at).getTime();
+      return messageAge >= 0 && messageAge <= 24 * 60 * 60 * 1000;
+    }
+
+    function resetChatComposer() {
+      editingMessageId = null;
+      document.getElementById("chatEditStatus").hidden = true;
+      document.getElementById("emojiPicker").hidden = true;
+    }
+
+    function startChatRealtime() {
+      if (chatChannel) return;
+
+      chatChannel = supabaseClient
+        .channel("shared-chat-room")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "chat_messages"
+          },
+          (payload) => {
+            if (payload.eventType === "INSERT" && payload.new.author_id !== currentUserId) {
+              notifyUser(
+                t("newMessage"),
+                `${payload.new.author_name}: ${payload.new.message}`
+              );
+            }
+
+            if (!document.getElementById("chatPanel").hidden) {
+              loadChatMessages();
+            }
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "memories"
+          },
+          (payload) => {
+            if (payload.new.author_name !== currentUserName) {
+              notifyUser(t("newMemory"), payload.new.title || t("newMemory"));
+            }
+          }
+        )
+        .subscribe();
+    }
+
+    function notifyUser(title, body) {
+      const toast = document.getElementById("activityToast");
+      toast.textContent = `${title}: ${body}`;
+      toast.hidden = false;
+
+      window.clearTimeout(notifyUser.toastTimer);
+      notifyUser.toastTimer = window.setTimeout(() => {
+        toast.hidden = true;
+      }, 5000);
+
+    }
+
+    function getOtherUserEmail() {
+      return Object.keys(USER_NAMES).find((email) => email !== currentUserEmail) || "";
+    }
+
+    async function createNotification(type, actorName, body, recipientEmail) {
+      if (!recipientEmail) return;
+
+      await supabaseClient
+        .from("notifications")
+        .insert({
+          type,
+          actor_name: actorName,
+          body,
+          recipient_email: recipientEmail
+        });
+    }
+
+    async function loadNotifications(markAsRead = false) {
+      const list = document.getElementById("notificationList");
+      const { data: notifications, error } = await supabaseClient
+        .from("notifications")
+        .select("id, type, actor_name, body, created_at, read_at")
+        .eq("recipient_email", currentUserEmail)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        list.innerHTML = `<p class="meta">${t("noNotifications")}</p>`;
+        return;
+      }
+
+      const unreadCount = notifications.filter((item) => !item.read_at).length;
+      const count = document.getElementById("notificationCount");
+      count.textContent = unreadCount;
+      count.hidden = unreadCount === 0;
+
+      list.innerHTML = notifications.length
+        ? notifications.map((item) => `
+          <div class="notification-item ${item.read_at ? "" : "unread"}">
+            <strong>${escapeHtml(item.actor_name)} ${item.type === "message" ? t("notificationMessage") : t("notificationMemory")}</strong>
+            <div>${escapeHtml(item.body || "")}</div>
+            <small>${new Date(item.created_at).toLocaleString(currentLanguage === "ar" ? "ar-EG" : "en-US")}</small>
+          </div>
+        `).join("")
+        : `<p class="meta">${t("noNotifications")}</p>`;
+
+      if (markAsRead && unreadCount) {
+        await supabaseClient
+          .from("notifications")
+          .update({ read_at: new Date().toISOString() })
+          .eq("recipient_email", currentUserEmail)
+          .is("read_at", null);
+
+        count.hidden = true;
+      }
+    }
+
+    function startNotificationsRealtime() {
+      supabaseClient
+        .channel("private-notifications")
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "notifications"
+          },
+          (payload) => {
+            if (payload.new.recipient_email === currentUserEmail) {
+              notifyUser(t("notificationTitle"), payload.new.body || t("newMemory"));
+              loadNotifications();
+            }
+          }
+        )
+        .subscribe();
     }
 
     applyLanguage();
