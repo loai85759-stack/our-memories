@@ -6,7 +6,6 @@
   <title>Our Memories</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
@@ -692,14 +691,8 @@
     .letter,
     .chat-form input,
     textarea {
-      font-family: Cairo, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+      font-family: Cairo, "Noto Color Emoji", "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
       font-variant-emoji: emoji;
-    }
-
-    .emoji-rendered {
-      width: 1.15em;
-      height: 1.15em;
-      vertical-align: -0.2em;
     }
 
     .memory-edit-status {
@@ -833,7 +826,7 @@
       color: #fff;
       background: transparent;
       border: 0;
-      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+      font-family: "Noto Color Emoji", "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
       font-size: 20px;
     }
 
@@ -1692,7 +1685,6 @@
         container.innerHTML = `<p>${t("empty")}</p>`;
       }
 
-      renderEmoji(container);
     }
 
     function editMemory(memory) {
@@ -1829,7 +1821,6 @@
           `;
           }).join("");
       container.scrollTop = container.scrollHeight;
-          renderEmoji(container);
     }
 
     async function deleteChatMessage(messageId) {
@@ -1872,14 +1863,6 @@
       editingMessageId = null;
       document.getElementById("chatEditStatus").hidden = true;
       document.getElementById("emojiPicker").hidden = true;
-    }
-
-    function renderEmoji(container) {
-      if (window.twemoji) {
-        window.twemoji.parse(container, {
-          className: "emoji-rendered"
-        });
-      }
     }
 
     function startChatRealtime() {
