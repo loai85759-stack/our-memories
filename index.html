@@ -6,6 +6,7 @@
   <title>Our Memories</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
@@ -686,8 +687,47 @@
     }
 
     .chat-message span,
-    .emoji-text {
-      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    .emoji-text,
+    .memory p,
+    .letter,
+    .chat-form input,
+    textarea {
+      font-family: Cairo, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+      font-variant-emoji: emoji;
+    }
+
+    .emoji-rendered {
+      width: 1.15em;
+      height: 1.15em;
+      vertical-align: -0.2em;
+    }
+
+    .memory-edit-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      color: #f3dca7;
+      background: #e8b86d14;
+      border: 1px solid #e8b86d55;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .memory-edit-status[hidden] {
+      display: none;
+    }
+
+    .memory-edit-status button {
+      width: auto;
+      margin: 0;
+      padding: 4px 9px;
+      color: #f3dca7;
+      background: transparent;
+      border: 1px solid #e8b86d55;
+      font-size: 12px;
     }
 
     .chat-message-actions {
@@ -900,6 +940,11 @@
           Add a new memory
         </h2>
 
+        <div class="memory-edit-status" id="memoryEditStatus" hidden>
+          <span id="memoryEditText"></span>
+          <button id="cancelMemoryEdit" type="button" data-i18n="cancelEdit">Cancel edit</button>
+        </div>
+
         <input
           id="memoryTitle"
           type="text"
@@ -1038,6 +1083,10 @@
         memoryTitle: "Memory title",
         memoryText: "Write your memory",
         save: "Save memory",
+        update: "Update memory",
+        cancelEdit: "Cancel edit",
+        editMemory: "Edit memory",
+        editedMemory: "edited",
         addFile: "Add any file, song, or photo",
         ourStory: "Our story",
         specialMessage: "Special message",
@@ -1094,6 +1143,10 @@
         memoryTitle: "عنوان الذكرى",
         memoryText: "اكتب تفاصيل الذكرى",
         save: "حفظ الذكرى",
+        update: "تعديل الذكرى",
+        cancelEdit: "إلغاء التعديل",
+        editMemory: "تعديل الذكرى",
+        editedMemory: "تم التعديل",
         addFile: "إضافة أي ملف أو أغنية أو صورة",
         ourStory: "حكايتنا",
         specialMessage: "رسالة خاصة",
@@ -1157,6 +1210,8 @@
     let memoryToDelete = null;
     let chatChannel = null;
     let editingMessageId = null;
+    let editingMemoryId = null;
+    let editingMemory = null;
     const deleteModal = document.getElementById("deleteModal");
 
     function t(key) {
@@ -1292,6 +1347,10 @@
     document
       .getElementById("saveButton")
       .addEventListener("click", saveMemory);
+
+    document
+      .getElementById("cancelMemoryEdit")
+      .addEventListener("click", resetMemoryComposer);
 
     document
       .getElementById("cancelDelete")
@@ -1467,28 +1526,46 @@
         attachmentType = attachmentFile.type || "application/octet-stream";
       }
 
-      const { error } = await supabaseClient
-        .from("memories")
-        .insert({
-          title,
-          content,
-          memory_date: date || null,
-          image_url: attachmentType?.startsWith("image/") ? attachmentPath : null,
-          file_url: attachmentPath,
-          file_name: attachmentName,
-          file_type: attachmentType,
-          author_name: currentUserName
-        });
+      const memoryData = {
+        title,
+        content,
+        memory_date: date || null,
+        image_url: attachmentType?.startsWith("image/") ? attachmentPath : null,
+        file_url: attachmentPath,
+        file_name: attachmentName,
+        file_type: attachmentType,
+        author_name: currentUserName,
+        author_id: currentUserId
+      };
+
+      if (editingMemoryId && !attachmentFile && editingMemory) {
+        memoryData.image_url = editingMemory.image_url || null;
+        memoryData.file_url = editingMemory.file_url || null;
+        memoryData.file_name = editingMemory.file_name || null;
+        memoryData.file_type = editingMemory.file_type || null;
+      }
+
+      const memoryQuery = editingMemoryId
+        ? supabaseClient
+          .from("memories")
+          .update({ ...memoryData, updated_at: new Date().toISOString() })
+          .eq("id", editingMemoryId)
+          .eq(
+            editingMemory?.author_id ? "author_id" : "author_name",
+            editingMemory?.author_id ? currentUserId : currentUserName
+          )
+        : supabaseClient
+          .from("memories")
+          .insert(memoryData);
+
+      const { error } = await memoryQuery;
 
       if (error) {
         saveError.textContent = t("saveError");
         return;
       }
 
-      document.getElementById("memoryTitle").value = "";
-      document.getElementById("contentText").value = "";
-      document.getElementById("date").value = "";
-      document.getElementById("attachment").value = "";
+      resetMemoryComposer();
 
       await createNotification(
         "memory",
@@ -1551,10 +1628,16 @@
 
         const article = document.createElement("article");
         article.className = "memory";
+        const isOwnMemory = memory.author_id === currentUserId ||
+          (!memory.author_id && memory.author_name === currentUserName);
 
         article.innerHTML = `
           <div class="memory-topline">
-            <h3><i class="fa-solid fa-heart memory-icon"></i> ${escapeHtml(memory.title)}</h3>
+            <h3><i class="fa-solid fa-heart memory-icon"></i> ${escapeHtml(memory.title)}
+              ${memory.updated_at && new Date(memory.updated_at).getTime() > new Date(memory.created_at).getTime() + 1000
+                ? `<small class="chat-edited">(${t("editedMemory")})</small>`
+                : ""}
+            </h3>
             <span class="seen-badge">
               <i class="fa-solid fa-check-double"></i> ${t("seen")}
             </span>
@@ -1571,6 +1654,11 @@
             <button class="seen-button" type="button">
               <i class="fa-solid fa-eye"></i> ${t("markSeen")}
             </button>
+            ${isOwnMemory
+              ? `<button class="seen-button edit-memory-button" type="button">
+                  <i class="fa-solid fa-pen"></i> ${t("editMemory")}
+                </button>`
+              : ""}
             <button
               class="delete-button"
               type="button"
@@ -1589,6 +1677,11 @@
           .querySelector(".delete-button")
           .addEventListener("click", () => deleteMemory(memory));
 
+        article.querySelector(".edit-memory-button")?.addEventListener(
+          "click",
+          () => editMemory(memory)
+        );
+
         article.querySelector(".seen-button").addEventListener("click", (event) => {
           event.currentTarget.innerHTML = `<i class="fa-solid fa-check-double"></i> ${t("seen")}`;
           event.currentTarget.classList.add("seen-active");
@@ -1598,6 +1691,32 @@
       if (data.length === 0) {
         container.innerHTML = `<p>${t("empty")}</p>`;
       }
+
+      renderEmoji(container);
+    }
+
+    function editMemory(memory) {
+      editingMemoryId = memory.id;
+      editingMemory = memory;
+      document.getElementById("memoryTitle").value = memory.title || "";
+      document.getElementById("contentText").value = memory.content || "";
+      document.getElementById("date").value = memory.memory_date || "";
+      document.getElementById("attachment").value = "";
+      document.getElementById("memoryEditText").textContent = t("editMemory");
+      document.getElementById("memoryEditStatus").hidden = false;
+      document.getElementById("saveButton").textContent = t("update");
+      document.querySelector(".form-box").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function resetMemoryComposer() {
+      editingMemoryId = null;
+      editingMemory = null;
+      document.getElementById("memoryTitle").value = "";
+      document.getElementById("contentText").value = "";
+      document.getElementById("date").value = "";
+      document.getElementById("attachment").value = "";
+      document.getElementById("memoryEditStatus").hidden = true;
+      document.getElementById("saveButton").textContent = t("save");
     }
 
     async function deleteMemory(memory) {
@@ -1710,6 +1829,7 @@
           `;
           }).join("");
       container.scrollTop = container.scrollHeight;
+          renderEmoji(container);
     }
 
     async function deleteChatMessage(messageId) {
@@ -1752,6 +1872,14 @@
       editingMessageId = null;
       document.getElementById("chatEditStatus").hidden = true;
       document.getElementById("emojiPicker").hidden = true;
+    }
+
+    function renderEmoji(container) {
+      if (window.twemoji) {
+        window.twemoji.parse(container, {
+          className: "emoji-rendered"
+        });
+      }
     }
 
     function startChatRealtime() {
