@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Memories</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold: #e8b86d;
+      --pink: #e8899f;
+      --dark: #100c14;
+      --card: #ffffff12;
+      --text: #fff8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Cairo, sans-serif;
+      background:
+        radial-gradient(circle at 15% 20%, #54263f, transparent 30%),
+        radial-gradient(circle at 85% 80%, #263b55, transparent 30%),
+        var(--dark);
+    }
+
+    .language-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 20;
+      width: 48px;
+      height: 48px;
+      margin: 0;
+      padding: 0;
+      border: 1px solid #e8b86d88;
+      border-radius: 50%;
+      color: var(--gold);
+      background: #100c14cc;
+      font-size: 19px;
+      backdrop-filter: blur(10px);
+    }
+
+    .language-button:hover {
+      color: white;
+      background: var(--gold);
+    }
+
+    .login {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 25px;
+      background:
+        radial-gradient(circle at 20% 20%, #54263f, transparent 35%),
+        radial-gradient(circle at 80% 80%, #263b55, transparent 35%),
+        var(--dark);
+    }
+
+    .login.background-loaded {
+      background:
+        linear-gradient(#100c1466, #100c1499),
+        url("ME/login-background.gif") center / cover no-repeat;
+    }
+
+    .site {
+      display: none;
+    }
+
+    .box,
+    .memory,
+    .letter {
+      background: var(--card);
+      border: 1px solid #ffffff22;
+      border-radius: 20px;
+      backdrop-filter: blur(14px);
+    }
+
+    .box {
+      width: min(560px, 100%);
+      padding: 35px;
+      text-align: center;
+    }
+
+    .login-gif {
+      display: block;
+      width: min(480px, 100%);
+      height: auto;
+      aspect-ratio: 16 / 9;
+      margin: 0 auto 15px;
+      object-fit: contain;
+      border-radius: 16px;
+    }
+
+    h1 {
+      margin: 10px 0;
+      font-size: 36px;
+    }
+
+    input,
+    textarea,
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 12px;
+      font: inherit;
+    }
+
+    input,
+    textarea {
+      color: white;
+      background: #ffffff12;
+      border: 1px solid #ffffff22;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      cursor: pointer;
+      color: #241914;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold), #f4d49b);
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px #0000002e;
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .delete-button {
+      width: auto;
+      min-width: 125px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 11px 17px;
+      color: #ffe8ed;
+      background: linear-gradient(135deg, #a9556b, #713d58);
+      border: 1px solid #e8899f88;
+      font-size: 14px;
+      box-shadow: 0 6px 18px #6f294733;
+    }
+
+    .delete-button:hover {
+      background: linear-gradient(135deg, #c16a7d, #864665);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      padding: 25px;
+      background: #100c14bb;
+      backdrop-filter: blur(8px);
+      animation: fade-in 180ms ease-out;
+    }
+
+    .modal-backdrop[hidden] {
+      display: none;
+    }
+
+    .confirm-modal {
+      width: min(430px, 100%);
+      padding: 28px;
+      text-align: center;
+      background:
+        linear-gradient(145deg, #382334, #211720 72%);
+      border: 1px solid #e8b86d80;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px #00000066;
+      animation: modal-pop 220ms ease-out;
+    }
+
+    .confirm-icon {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 14px;
+      color: var(--gold);
+      background: #e8b86d1c;
+      border: 1px solid #e8b86d66;
+      border-radius: 50%;
+      font-size: 22px;
+    }
+
+    .confirm-modal h2 {
+      color: var(--gold);
+      font-size: 22px;
+    }
+
+    .confirm-modal p {
+      margin-top: 10px;
+      color: #f3dce2;
+      line-height: 1.8;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .modal-actions button {
+      margin-top: 0;
+      padding: 12px 16px;
+    }
+
+    .cancel-button {
+      color: #fff8f0;
+      background: #ffffff18;
+      border: 1px solid #ffffff33;
+    }
+
+    .confirm-delete-button {
+      color: #ffe8ed;
+      background: linear-gradient(135deg, #a9556b, #713d58);
+      border: 1px solid #e8899f88;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modal-pop {
+      from { opacity: 0; transform: translateY(10px) scale(.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 480px) {
+      .modal-actions {
+        flex-direction: column-reverse;
+      }
+    }
+
+    .password-field {
+      position: relative;
+    }
+
+    .password-field input {
+      padding-left: 55px;
+    }
+
+    .eye-button {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      width: 42px;
+      height: 42px;
+      margin: 0;
+      padding: 0;
+      transform: translateY(-35%);
+      color: white;
+      background: transparent !important;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .eye-button:hover {
+      transform: translateY(-35%);
+      background: transparent !important;
+      box-shadow: none;
+    }
+
+    .error {
+      min-height: 28px;
+      margin-top: 10px;
+      color: #ff9da9;
+    }
+
+    header {
+      min-height: 55vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 35px;
+      border-radius: 24px;
+      background:
+        linear-gradient(#100c1466, #100c14),
+        url("ME/welcome.gif") center/cover;
+    }
+
+    header h2 {
+      color: var(--gold);
+      font-size: clamp(45px, 9vw, 90px);
+    }
+
+    header p {
+      margin-top: 15px;
+      font-size: 20px;
+    }
+
+    .content {
+      width: min(1000px, 100%);
+      margin: 55px auto;
+    }
+
+    .section-title {
+      margin: 35px 0 20px;
+      color: var(--gold);
+      text-align: center;
+    }
+
+    .form-box {
+      padding: 25px;
+      margin-bottom: 40px;
+      width: min(560px, 100%);
+      margin: 40px auto;
+    }
+
+    .memory {
+      margin: 20px 0;
+      padding: 22px;
+    }
+
+    .memory h3 {
+      color: var(--gold);
+    }
+
+    .memory img {
+      width: 100%;
+      max-height: 360px;
+      margin-top: 15px;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+
+    .meta {
+      margin-top: 12px;
+      color: #d8cbd1;
+      font-size: 14px;
+    }
+
+    .letter {
+      padding: 30px;
+      text-align: center;
+      line-height: 2.2;
+    }
+
+    footer {
+      padding: 25px;
+      color: #bcaeb7;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <button
+    id="languageButton"
+    class="language-button"
+    type="button"
+    aria-label="Change language"
+  >
+    <i class="fa-solid fa-globe"></i>
+  </button>
+
+  <section class="login" id="login">
+    <div class="box">
+      <img
+        class="login-gif"
+        data-src="ME/welcome.gif"
+        alt="Welcome"
+      >
+
+      <h1 data-i18n="title">Our Memories</h1>
+      <p data-i18n="loginSubtitle">Sign in to open our memories</p>
+
+      <input
+        id="email"
+        type="email"
+        data-placeholder="email"
+        placeholder="Email"
+      >
+
+      <div class="password-field">
+        <input
+          id="password"
+          type="password"
+          data-placeholder="password"
+          placeholder="Password"
+        >
+
+        <button
+          type="button"
+          class="eye-button"
+          id="togglePassword"
+          aria-label="Show password"
+        >
+          <i class="fa-solid fa-eye"></i>
+        </button>
+      </div>
+
+      <button id="loginButton" data-i18n="login">Sign in</button>
+      <div class="error" id="loginError"></div>
+    </div>
+  </section>
+
+  <main class="site" id="site">
+    <header>
+      <div>
+        <h2 data-i18n="title">Our Memories</h2>
+        <p data-i18n="heroText">
+          Every beautiful moment between us deserves to live forever.
+        </p>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="box form-box">
+        <h2 class="section-title" data-i18n="addMemory">
+          Add a new memory
+        </h2>
+
+        <input
+          id="memoryTitle"
+          type="text"
+          data-placeholder="memoryTitle"
+          placeholder="Memory title"
+        >
+
+        <input id="date" type="date">
+
+        <textarea
+          id="contentText"
+          data-placeholder="memoryText"
+          placeholder="Write your memory"
+        ></textarea>
+
+        <input id="image" type="file" accept="image/*">
+
+        <button id="saveButton" data-i18n="save">
+          Save memory
+        </button>
+
+        <div class="error" id="saveError"></div>
+      </section>
+
+      <h2 class="section-title" data-i18n="ourStory">Our story</h2>
+      <section id="memories"></section>
+
+      <h2 class="section-title" data-i18n="specialMessage">
+        Special message
+      </h2>
+
+      <div class="letter" data-i18n="letter">
+        To the special person, every new memory makes our story more beautiful.
+      </div>
+    </div>
+
+    <footer data-i18n="footer">Made with love</footer>
+  </main>
+
+  <div class="modal-backdrop" id="deleteModal" hidden>
+    <section class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirmDeleteTitle">
+      <div class="confirm-icon" aria-hidden="true">
+        <i class="fa-solid fa-heart-crack"></i>
+      </div>
+      <h2 id="confirmDeleteTitle" data-i18n="confirmDeleteTitle">
+        Delete memory?
+      </h2>
+      <p data-i18n="confirmDelete">Are you sure you want to delete this memory?</p>
+      <div class="modal-actions">
+        <button class="cancel-button" id="cancelDelete" type="button" data-i18n="cancel">
+          Cancel
+        </button>
+        <button class="confirm-delete-button" id="confirmDelete" type="button" data-i18n="delete">
+          Delete
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const SUPABASE_URL =
+      "https://cezwydejejtolfkoahxv.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_GM3jBj9REXKH5eViunHn1w_mvYUiEy3";
+
+    const BUCKET = "memorise-images-with-my-wife";
+
+    const USER_NAMES = {
+      "loai85759@gmail.com": "Loai",
+      "rrrfkks866@gmail.com": "Rokaya"
+    };
+
+    const translations = {
+      en: {
+        title: "Our Memories",
+        loginSubtitle: "Sign in to open our memories",
+        email: "Email",
+        password: "Password",
+        login: "Sign in",
+        heroText: "Every beautiful moment between us deserves to live forever.",
+        addMemory: "Add a new memory",
+        memoryTitle: "Memory title",
+        memoryText: "Write your memory",
+        save: "Save memory",
+        ourStory: "Our story",
+        specialMessage: "Special message",
+        letter: "To the special person, every new memory makes our story more beautiful.",
+        footer: "Made with love",
+        showPassword: "Show password",
+        hidePassword: "Hide password",
+        loginError: "The email or password is incorrect.",
+        required: "Write a title and details first.",
+        uploadError: "There was an error uploading the image.",
+        saveError: "There was an error saving the memory.",
+        loading: "Loading memories...",
+        loadError: "There was an error loading memories.",
+        empty: "No memories yet.",
+        addedBy: "Added by",
+        date: "Date",
+        delete: "Delete",
+        confirmDeleteTitle: "Delete memory?",
+        confirmDelete: "Are you sure you want to delete this memory?",
+        deleteError: "There was an error deleting the memory.",
+        cancel: "Cancel"
+      },
+
+      ar: {
+        title: "ذكرياتنا",
+        loginSubtitle: "سجّل الدخول لفتح ذكرياتنا",
+        email: "الإيميل",
+        password: "كلمة المرور",
+        login: "دخول",
+        heroText: "كل لحظة حلوة عاشت بينا تستاهل تفضل موجودة للأبد.",
+        addMemory: "إضافة ذكرى جديدة",
+        memoryTitle: "عنوان الذكرى",
+        memoryText: "اكتب تفاصيل الذكرى",
+        save: "حفظ الذكرى",
+        ourStory: "حكايتنا",
+        specialMessage: "رسالة خاصة",
+        letter: "إلى الشخص الغالي، كل ذكرى جديدة بنضيفها بتخلي حكايتنا أجمل.",
+        footer: "صُنعت بحب",
+        showPassword: "إظهار كلمة المرور",
+        hidePassword: "إخفاء كلمة المرور",
+        loginError: "الإيميل أو كلمة المرور غير صحيحة",
+        required: "اكتب عنوان الذكرى وتفاصيلها",
+        uploadError: "حدث خطأ أثناء رفع الصورة",
+        saveError: "حدث خطأ أثناء حفظ الذكرى",
+        loading: "جاري تحميل الذكريات...",
+        loadError: "حدث خطأ أثناء تحميل الذكريات",
+        empty: "لا توجد ذكريات بعد",
+        addedBy: "أضافها",
+        date: "التاريخ",
+        delete: "حذف",
+        confirmDeleteTitle: "حذف الذكرى؟",
+        confirmDelete: "هل أنت متأكد أنك تريد حذف هذه الذكرى؟",
+        deleteError: "حدث خطأ أثناء حذف الذكرى",
+        cancel: "إلغاء"
+      }
+    };
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const loginSection = document.getElementById("login");
+    const site = document.getElementById("site");
+    const loginError = document.getElementById("loginError");
+    const saveError = document.getElementById("saveError");
+
+    let currentUserName = "";
+    let currentLanguage = "en";
+    let memoryToDelete = null;
+    const deleteModal = document.getElementById("deleteModal");
+
+    function t(key) {
+      return translations[currentLanguage][key];
+    }
+
+    function loadVisualsAfterPageOpens() {
+      const loginGif = document.querySelector(".login-gif");
+
+      if (loginGif.dataset.src) {
+        loginGif.src = loginGif.dataset.src;
+      }
+
+      window.setTimeout(() => {
+        loginSection.classList.add("background-loaded");
+      }, 1200);
+    }
+
+    function applyLanguage() {
+      const isArabic = currentLanguage === "ar";
+
+      document.documentElement.lang = currentLanguage;
+      document.documentElement.dir = isArabic ? "rtl" : "ltr";
+
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        element.textContent = t(element.dataset.i18n);
+      });
+
+      document.querySelectorAll("[data-placeholder]").forEach((element) => {
+        element.placeholder = t(element.dataset.placeholder);
+      });
+
+      document.getElementById("togglePassword").setAttribute(
+        "aria-label",
+        t("showPassword")
+      );
+
+      document.getElementById("languageButton").setAttribute(
+        "aria-label",
+        isArabic ? "Change language" : "تغيير اللغة"
+      );
+
+      document.title = t("title");
+    }
+
+    document
+      .getElementById("languageButton")
+      .addEventListener("click", () => {
+        currentLanguage = currentLanguage === "en" ? "ar" : "en";
+        applyLanguage();
+
+        if (document.getElementById("memories").children.length > 0) {
+          loadMemories();
+        }
+      });
+
+    document
+      .getElementById("togglePassword")
+      .addEventListener("click", function () {
+        const password = document.getElementById("password");
+        const icon = this.querySelector("i");
+        const visible = password.type === "password";
+
+        password.type = visible ? "text" : "password";
+        icon.classList.toggle("fa-eye", !visible);
+        icon.classList.toggle("fa-eye-slash", visible);
+        this.setAttribute(
+          "aria-label",
+          visible ? t("hidePassword") : t("showPassword")
+        );
+      });
+
+    document
+      .getElementById("loginButton")
+      .addEventListener("click", login);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") login();
+    });
+
+    async function login() {
+      loginError.textContent = "";
+
+      const email = document
+        .getElementById("email")
+        .value
+        .trim()
+        .toLowerCase();
+
+      const password = document.getElementById("password").value;
+
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        loginError.textContent = t("loginError");
+        return;
+      }
+
+      currentUserName = USER_NAMES[email] || email;
+      loginSection.style.display = "none";
+      site.style.display = "block";
+
+      await loadMemories();
+    }
+
+    document
+      .getElementById("saveButton")
+      .addEventListener("click", saveMemory);
+
+    document
+      .getElementById("cancelDelete")
+      .addEventListener("click", closeDeleteModal);
+
+    document
+      .getElementById("confirmDelete")
+      .addEventListener("click", () => {
+        const memory = memoryToDelete;
+        closeDeleteModal();
+
+        if (memory) {
+          removeMemory(memory);
+        }
+      });
+
+    deleteModal.addEventListener("click", (event) => {
+      if (event.target === deleteModal) {
+        closeDeleteModal();
+      }
+    });
+
+    async function saveMemory() {
+      saveError.textContent = "";
+
+      const title = document
+        .getElementById("memoryTitle")
+        .value
+        .trim();
+
+      const content = document
+        .getElementById("contentText")
+        .value
+        .trim();
+
+      const date = document.getElementById("date").value;
+      const imageFile = document.getElementById("image").files[0];
+
+      if (!title || !content) {
+        saveError.textContent = t("required");
+        return;
+      }
+
+      let imagePath = null;
+
+      if (imageFile) {
+        const fileName =
+          `${Date.now()}-${crypto.randomUUID()}-${imageFile.name}`
+            .replace(/\s+/g, "-");
+
+        const { error: uploadError } =
+          await supabaseClient.storage
+            .from(BUCKET)
+            .upload(fileName, imageFile);
+
+        if (uploadError) {
+          saveError.textContent = t("uploadError");
+          return;
+        }
+
+        imagePath = fileName;
+      }
+
+      const { error } = await supabaseClient
+        .from("memories")
+        .insert({
+          title,
+          content,
+          memory_date: date || null,
+          image_url: imagePath,
+          author_name: currentUserName
+        });
+
+      if (error) {
+        saveError.textContent = t("saveError");
+        return;
+      }
+
+      document.getElementById("memoryTitle").value = "";
+      document.getElementById("contentText").value = "";
+      document.getElementById("date").value = "";
+      document.getElementById("image").value = "";
+
+      await loadMemories();
+    }
+
+    async function loadMemories() {
+      const container = document.getElementById("memories");
+
+      container.innerHTML = `<p>${t("loading")}</p>`;
+
+      const { data, error } = await supabaseClient
+        .from("memories")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        container.innerHTML = `<p>${t("loadError")}</p>`;
+        return;
+      }
+
+      container.innerHTML = "";
+
+      for (const memory of data) {
+        let imageHtml = "";
+
+        if (memory.image_url) {
+          const { data: signedImage } =
+            await supabaseClient.storage
+              .from(BUCKET)
+              .createSignedUrl(memory.image_url, 3600);
+
+          if (signedImage?.signedUrl) {
+            imageHtml = `
+              <img src="${signedImage.signedUrl}" alt="${t("title")}">
+            `;
+          }
+        }
+
+        const article = document.createElement("article");
+        article.className = "memory";
+
+        article.innerHTML = `
+          <h3>${escapeHtml(memory.title)}</h3>
+          <p>${escapeHtml(memory.content)}</p>
+          ${imageHtml}
+          <div class="meta">
+            ${t("addedBy")}: ${escapeHtml(memory.author_name)}
+            ${memory.memory_date
+              ? ` | ${t("date")}: ${memory.memory_date}`
+              : ""}
+          </div>
+          <button
+            class="delete-button"
+            type="button"
+            data-memory-id="${escapeHtml(memory.id)}"
+            data-image-path="${escapeHtml(memory.image_url || "")}"
+          >
+            <i class="fa-solid fa-trash"></i>
+            ${t("delete")}
+          </button>
+        `;
+
+        container.appendChild(article);
+
+        article
+          .querySelector(".delete-button")
+          .addEventListener("click", () => deleteMemory(memory));
+      }
+
+      if (data.length === 0) {
+        container.innerHTML = `<p>${t("empty")}</p>`;
+      }
+    }
+
+    async function deleteMemory(memory) {
+      memoryToDelete = memory;
+      deleteModal.hidden = false;
+      document.getElementById("cancelDelete").focus();
+    }
+
+    function closeDeleteModal() {
+      memoryToDelete = null;
+      deleteModal.hidden = true;
+    }
+
+    async function removeMemory(memory) {
+
+      saveError.textContent = "";
+
+      if (memory.image_url) {
+        const { error: imageError } = await supabaseClient.storage
+          .from(BUCKET)
+          .remove([memory.image_url]);
+
+        if (imageError) {
+          saveError.textContent = t("deleteError");
+          return;
+        }
+      }
+
+      const { error } = await supabaseClient
+        .from("memories")
+        .delete()
+        .eq("id", memory.id);
+
+      if (error) {
+        saveError.textContent = t("deleteError");
+        return;
+      }
+
+      await loadMemories();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    applyLanguage();
+    loadVisualsAfterPageOpens();
+  </script>
+
+</body>
+</html>
