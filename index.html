@@ -6,6 +6,16 @@
   <title>Our Memories</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "8a2724a4-9db3-4ffd-9ba9-92b177d34bf6",
+        allowLocalhostAsSecureOrigin: true
+      });
+    });
+  </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
@@ -670,6 +680,25 @@
       place-items: center;
     }
 
+    .push-button {
+      position: fixed;
+      top: 20px;
+      right: 182px;
+      z-index: 25;
+      display: none;
+      width: auto;
+      margin: 0;
+      padding: 12px 14px;
+      color: #241914;
+      background: var(--gold);
+      border-radius: 999px;
+      font-size: 12px;
+    }
+
+    .push-button.push-visible {
+      display: block;
+    }
+
     .notification-count {
       position: absolute;
       top: -4px;
@@ -998,6 +1027,11 @@
   </button>
 
   <main class="site" id="site">
+    <button class="push-button" id="pushButton" type="button" hidden>
+      <i class="fa-solid fa-bell"></i>
+      <span data-i18n="enableNotifications">Enable notifications</span>
+    </button>
+
     <button class="notification-button" id="notificationButton" type="button" aria-label="Notifications" hidden>
       <i class="fa-solid fa-bell"></i>
       <span class="notification-count" id="notificationCount" hidden>0</span>
@@ -1227,6 +1261,7 @@
         ,newMessage: "New message"
         ,newMemory: "New memory added"
         ,notificationTitle: "Notifications"
+        ,enableNotifications: "Enable notifications"
         ,noNotifications: "No notifications yet."
         ,notificationMessage: "sent you a message"
         ,notificationMemory: "added a new memory or file"
@@ -1294,6 +1329,7 @@
         ,newMessage: "رسالة جديدة"
         ,newMemory: "تمت إضافة ذكرى جديدة"
         ,notificationTitle: "الإشعارات"
+        ,enableNotifications: "تفعيل الإشعارات"
         ,noNotifications: "لا توجد إشعارات بعد."
         ,notificationMessage: "بعت لك رسالة"
         ,notificationMemory: "أضافت ذكرى أو ملفاً جديداً"
@@ -1457,6 +1493,8 @@
       document.getElementById("chatToggle").classList.add("chat-visible");
       document.getElementById("notificationButton").hidden = false;
       document.getElementById("notificationButton").classList.add("notification-visible");
+      document.getElementById("pushButton").hidden = false;
+      document.getElementById("pushButton").classList.add("push-visible");
       startBackgroundMusic();
       startElapsedCounter();
       startChatRealtime();
@@ -1465,6 +1503,13 @@
 
       await loadMemories();
     }
+
+    document.getElementById("pushButton").addEventListener("click", () => {
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      window.OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.Notifications.requestPermission();
+      });
+    });
 
     musicButton.addEventListener("click", async () => {
       if (backgroundMusic.paused) {
