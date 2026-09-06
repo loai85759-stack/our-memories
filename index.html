@@ -1495,6 +1495,10 @@
       document.getElementById("notificationButton").classList.add("notification-visible");
       document.getElementById("pushButton").hidden = false;
       document.getElementById("pushButton").classList.add("push-visible");
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      window.OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.login(currentUserId);
+      });
       startBackgroundMusic();
       startElapsedCounter();
       startChatRealtime();
@@ -2138,7 +2142,7 @@
     }
 
     function notifyUser(title, body) {
-      const toast = document.getElementById("activity-toast");
+      const toast = document.getElementById("activityToast");
       toast.textContent = `${title}: ${body}`;
       toast.hidden = false;
 
