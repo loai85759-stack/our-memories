@@ -316,6 +316,61 @@
       font-size: 20px;
     }
 
+    .countdown {
+      width: min(760px, calc(100% - 32px));
+      margin: -28px auto 35px;
+      padding: 18px;
+      text-align: center;
+      background: #ffffff12;
+      border: 1px solid #e8b86d66;
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+    }
+
+    .countdown-title {
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    .countdown-values {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .countdown-unit {
+      min-width: 68px;
+      padding: 8px 6px;
+      background: #100c1466;
+      border-radius: 10px;
+    }
+
+    .countdown-unit strong,
+    .countdown-unit small {
+      display: block;
+    }
+
+    .countdown-unit strong {
+      color: #fff8f0;
+      font-size: 24px;
+    }
+
+    .countdown-unit small {
+      color: #d8cbd1;
+      font-size: 11px;
+    }
+
+    @media (max-width: 480px) {
+      .countdown-values {
+        gap: 5px;
+      }
+
+      .countdown-unit {
+        min-width: 57px;
+      }
+    }
+
     .content {
       width: min(1000px, 100%);
       margin: 55px auto;
@@ -343,7 +398,7 @@
       color: var(--gold);
     }
 
-    .memory img {
+    .memory .attachment-image {
       width: 100%;
       max-height: 360px;
       margin-top: 15px;
@@ -597,7 +652,7 @@
     .notification-button {
       position: fixed;
       top: 20px;
-      right: 80px;
+      right: 128px;
       z-index: 25;
       display: none;
       width: 48px;
@@ -683,6 +738,37 @@
       margin-top: 3px;
       color: #cbbbc3;
       font-size: 11px;
+    }
+
+    .music-button {
+      position: fixed;
+      right: 74px;
+      top: 20px;
+      z-index: 25;
+      display: none;
+      width: 48px;
+      height: 48px;
+      margin: 0;
+      padding: 0;
+      border: 1px solid #e8b86d88;
+      border-radius: 50%;
+      color: var(--gold);
+      background: #100c14cc;
+    }
+
+    .music-button.music-visible {
+      display: grid;
+      place-items: center;
+    }
+
+    @media (max-width: 600px) {
+      .music-button {
+        right: 74px;
+      }
+
+      .notification-button {
+        right: 128px;
+      }
     }
 
     .chat-message span,
@@ -827,7 +913,8 @@
       background: transparent;
       border: 0;
       font-family: "Noto Color Emoji", "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
-      font-size: 20px;
+      font-size: 22px;
+      line-height: 1;
     }
 
     .emoji-picker button:hover {
@@ -902,6 +989,14 @@
     </div>
   </section>
 
+  <audio id="backgroundMusic" loop autoplay preload="auto">
+    <source src="ME/backgroundmusic.mp3" type="audio/mpeg">
+  </audio>
+
+  <button class="music-button music-visible" id="musicButton" type="button" aria-label="Play music">
+    <i class="fa-solid fa-volume-xmark"></i>
+  </button>
+
   <main class="site" id="site">
     <button class="notification-button" id="notificationButton" type="button" aria-label="Notifications" hidden>
       <i class="fa-solid fa-bell"></i>
@@ -926,6 +1021,16 @@
         </p>
       </div>
     </header>
+
+    <section class="countdown" aria-live="polite">
+      <div class="countdown-title" data-i18n="countdownTitle">Our special countdown</div>
+      <div class="countdown-values">
+        <div class="countdown-unit"><strong id="countdownDays">0</strong><small data-i18n="days">Days</small></div>
+        <div class="countdown-unit"><strong id="countdownHours">0</strong><small data-i18n="hours">Hours</small></div>
+        <div class="countdown-unit"><strong id="countdownMinutes">0</strong><small data-i18n="minutes">Minutes</small></div>
+        <div class="countdown-unit"><strong id="countdownSeconds">0</strong><small data-i18n="seconds">Seconds</small></div>
+      </div>
+    </section>
 
     <div class="content">
       <section class="box form-box">
@@ -1058,6 +1163,8 @@
       "sb_publishable_GM3jBj9REXKH5eViunHn1w_mvYUiEy3";
 
     const BUCKET = "memorise-images-with-my-wife";
+    const COUNTER_START = "2026-08-26T05:30:25";
+    let countdownTimer = null;
 
     const USER_NAMES = {
       "loai85759@gmail.com": "Loai",
@@ -1123,6 +1230,13 @@
         ,noNotifications: "No notifications yet."
         ,notificationMessage: "sent you a message"
         ,notificationMemory: "added a new memory or file"
+        ,muteMusic: "Mute music"
+        ,playMusic: "Play music"
+        ,countdownTitle: "Time together"
+        ,days: "Days"
+        ,hours: "Hours"
+        ,minutes: "Minutes"
+        ,seconds: "Seconds"
       },
 
       ar: {
@@ -1170,7 +1284,7 @@
         ,chatEdit: "تعديل الرسالة"
         ,chatSave: "حفظ التعديل"
         ,chatCancel: "إلغاء التعديل"
-        ,chatEditButton: "تعديل الرسالة"
+        ,chatEditButton: " تعديل الرسالة"
         ,chatDeleteButton: "حذف الرسالة"
         ,chatDeleteConfirm: "هل تريد حذف الرسالة؟"
         ,chatDeleteExpired: "يمكن حذف الرسالة خلال أول 24 ساعة فقط."
@@ -1183,6 +1297,13 @@
         ,noNotifications: "لا توجد إشعارات بعد."
         ,notificationMessage: "بعت لك رسالة"
         ,notificationMemory: "أضافت ذكرى أو ملفاً جديداً"
+        ,muteMusic: "كتم الموسيقى"
+        ,playMusic: "تشغيل الموسيقى"
+        ,countdownTitle: "الوقت اللي عدى بينا"
+        ,days: "يوم"
+        ,hours: "ساعة"
+        ,minutes: "دقيقة"
+        ,seconds: "ثانية"
       }
     };
 
@@ -1195,6 +1316,8 @@
     const site = document.getElementById("site");
     const loginError = document.getElementById("loginError");
     const saveError = document.getElementById("saveError");
+    const backgroundMusic = document.getElementById("backgroundMusic");
+    const musicButton = document.getElementById("musicButton");
 
     let currentUserName = "";
     let currentUserId = "";
@@ -1256,6 +1379,10 @@
       document.getElementById("chatClose").setAttribute(
         "aria-label",
         currentLanguage === "ar" ? "إغلاق الشات" : "Close chat"
+      );
+      musicButton.setAttribute(
+        "aria-label",
+        backgroundMusic.paused ? t("playMusic") : t("muteMusic")
       );
     }
 
@@ -1323,19 +1450,78 @@
 
       currentUserName = USER_NAMES[email] || email;
       currentUserEmail = email;
-        currentUserId = loginData.user.id;
+      currentUserId = loginData.user.id;
       loginSection.style.display = "none";
       site.style.display = "block";
       document.getElementById("chatToggle").hidden = false;
       document.getElementById("chatToggle").classList.add("chat-visible");
       document.getElementById("notificationButton").hidden = false;
       document.getElementById("notificationButton").classList.add("notification-visible");
+      startBackgroundMusic();
+      startElapsedCounter();
       startChatRealtime();
       startNotificationsRealtime();
       loadNotifications();
 
       await loadMemories();
     }
+
+    musicButton.addEventListener("click", async () => {
+      if (backgroundMusic.paused) {
+        await startBackgroundMusic();
+      } else {
+        backgroundMusic.pause();
+        updateMusicButton();
+      }
+    });
+
+    async function startBackgroundMusic() {
+      try {
+        await backgroundMusic.play();
+      } catch (error) {
+        document.addEventListener("click", playMusicAfterInteraction, { once: true });
+      }
+
+      updateMusicButton();
+    }
+
+    function playMusicAfterInteraction() {
+      backgroundMusic.play().then(updateMusicButton).catch(() => {});
+    }
+
+    function updateMusicButton() {
+      const icon = musicButton.querySelector("i");
+      const isPlaying = !backgroundMusic.paused;
+
+      icon.classList.toggle("fa-volume-high", isPlaying);
+      icon.classList.toggle("fa-volume-xmark", !isPlaying);
+      musicButton.setAttribute("aria-label", isPlaying ? t("muteMusic") : t("playMusic"));
+    }
+
+    function startElapsedCounter() {
+      if (countdownTimer) window.clearInterval(countdownTimer);
+
+      updateElapsedCounter();
+      countdownTimer = window.setInterval(updateElapsedCounter, 1000);
+    }
+
+    function updateElapsedCounter() {
+      const startTime = new Date(COUNTER_START).getTime();
+      const elapsed = Math.max(0, Date.now() - startTime);
+      const totalSeconds = Math.floor(elapsed / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      document.getElementById("countdownDays").textContent = days;
+      document.getElementById("countdownHours").textContent = String(hours).padStart(2, "0");
+      document.getElementById("countdownMinutes").textContent = String(minutes).padStart(2, "0");
+      document.getElementById("countdownSeconds").textContent = String(seconds).padStart(2, "0");
+    }
+
+    document.addEventListener("pointerdown", startBackgroundMusic, { once: true });
+    document.addEventListener("keydown", startBackgroundMusic, { once: true });
 
     document
       .getElementById("saveButton")
@@ -1606,7 +1792,7 @@
               `;
             } else if (fileType.startsWith("image/")) {
               attachmentHtml = `
-                <img src="${signedImage.signedUrl}" alt="${escapeHtml(fileName)}">
+                <img class="attachment-image" src="${signedImage.signedUrl}" alt="${escapeHtml(fileName)}">
               `;
             } else {
               attachmentHtml = `
@@ -1907,7 +2093,7 @@
     }
 
     function notifyUser(title, body) {
-      const toast = document.getElementById("activityToast");
+      const toast = document.getElementById("activity-toast");
       toast.textContent = `${title}: ${body}`;
       toast.hidden = false;
 
@@ -1996,6 +2182,7 @@
 
     applyLanguage();
     loadVisualsAfterPageOpens();
+    startBackgroundMusic();
   </script>
 
 </body>
